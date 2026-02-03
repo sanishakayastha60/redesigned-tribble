@@ -1,0 +1,31 @@
+{
+  "name": "movie",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "server": "nodemon app.js",
+    "client":"npm run dev --prefix movie-frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\" "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanishakayastha60/redesigned-tribble.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanishakayastha60/redesigned-tribble/issues"
+  },
+  "homepage": "https://github.com/sanishakayastha60/redesigned-tribble#readme",
+  "dependencies": {
+    "axios": "^1.13.4",
+    "concurrently": "^9.2.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11"
+  }
+}
