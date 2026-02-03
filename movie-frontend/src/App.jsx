@@ -6,6 +6,7 @@ export default function App(){
   const [movies, setMovies] = useState([]); //api le pathako movie store garna
   const [loading, setLoading] = useState(false); //load huda kehi dekhauna
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [trailerKey, setTrailerKey] = useState(null); //trailer ko lagi
   const handleSearch = async () => {
     if(!query) return;
     setLoading(true);
@@ -20,6 +21,19 @@ export default function App(){
   const handleKeyDown = (e)=>{
     if(e.key === 'Enter'){
       handleSearch();
+    }
+  }
+
+   //Trailer ko lagi
+  const handleMovieClick = async(movie)=>{
+    setSelectedMovie(movie);
+    setTrailerKey(null);
+    try{
+      const response = await axios.get(`http://localhost:3000/movie/${movie.id}/videos`);
+      setTrailerKey(response.data||false);
+    }catch(err){
+      console.log("no trailer found");
+      setTrailerKey(false);
     }
   }
 
@@ -71,15 +85,22 @@ export default function App(){
       <p className="text-gray-200 leading-relaxed mb-8">
         {movie.summary}
       </p>
-
-      <button className="w-full bg-blue-600 py-3 rounded-xl font-bold hover:bg-blue-500 transition">
-        ▶ Play Trailer
-      </button>
+      {trailerKey ? (
+        <div className="mt-4 aspect-video">
+          <iframe src={`https://www.youtube.com/embed/${trailerKey}`} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="w-full h-full rounded-lg" title="Youtube video Player"></iframe>
+        </div>
+      ):(
+        <button disabled={trailerKey===null} className= {`mt-6 w-full py-3 rounded-lg font-bold transition-all ${trailerKey === false ? 'bg-gray-800 text-gray-500':'bg-red-600 text-white'}`} >
+          {trailerKey === null ? "Searching for Trailer...": "No Trailer Available"}
+        </button>
+      )}
+      
     </div>
   </div>
 </div>
     )
   }
+ 
 
   return (
     <div className="min-h-screen p-8 font-sans bg-black text-white">
@@ -94,8 +115,8 @@ export default function App(){
           )}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {movies.map((movie, index) => (
-          <div className="p-2" key={index}>
+        {movies.map((movie) => (
+          <div className="p-2" key={movie.id} onClick={()=>handleMovieClick(movie)}>
             <div className="group relative overflow-hidden rounded-lg shadow-lg bg-gray-900" >
             <div>
             <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} className="h-[400px] w-full object-cover transition-transform duration-300 group-hover:scale-110" />

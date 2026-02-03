@@ -6,16 +6,17 @@ require('dotenv').config();
 
 const app = express(); //yele server create garxa
 const PORT = 3000; //hamro PORT through which server sanga connect hunxa
+const my_KEY = process.env.TMDB_KEY;
 
 app.use(cors()); //it tells the server that it is ok to talk with other ports
 
 app.get('/search-real-movies',async(req,res)=>{
     const movieTitle = req.query.title;
     const genreMap = {28:"Action",12:"Adventure",16:"Animation",35:"Comedy",80:"Crime",99:"Documentary",18:"Drama",10751:"Family",14:"Fantasy",36:"History",27:"Horror",10402:"Music",9648:"Mystery",10749:"Romance",878:"Science Fiction",10770:"TV Movie",53:"Thriller",10752:"War",37:"Western"};
-    const my_KEY = process.env.TMDB_KEY;
     try{
         const response = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${my_KEY}&query=${movieTitle}`);
         const cleanMovies = response.data.results.map(m=>({
+            id:m.id,
             title:m.title,
             genre: m.genre_ids.map(id => genreMap[id]).join(", "),
             rating:m.vote_average,
@@ -25,6 +26,20 @@ app.get('/search-real-movies',async(req,res)=>{
         res.json(cleanMovies);
     }catch(error){
         res.status(500).json({message:"Failed to fetch"});
+    }
+})
+
+app.get('/movie/:id/videos',async(req, res)=>{
+    try{
+        const { id } = req.params;
+        console.log("fetching id",id);
+        const response = await axios.get(`https://api.themoviedb.org/3/movie/${id}/videos?api_key=${my_KEY}`);
+        const trailer = response.data.results.find(v=>v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser'));
+        res.json(trailer ? trailer.key : false);
+    }catch(error){
+        res.status(500).send("Error fetching trailer");
+        
+    console.error("TMDB ERROR:", error.response?.data || error.message);
     }
 })
 
