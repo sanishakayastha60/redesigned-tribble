@@ -5,7 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express(); //yele server create garxa
-const PORT = 3000; //hamro PORT through which server sanga connect hunxa
+const PORT = process.env.PORT || 3000; //hamro PORT through which server sanga connect hunxa
 const my_KEY = process.env.TMDB_KEY;
 
 app.use(cors()); //it tells the server that it is ok to talk with other ports

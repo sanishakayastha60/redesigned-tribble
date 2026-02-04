@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
+    "start": "node app.js",
     "server": "nodemon app.js",
     "client":"npm run dev --prefix movie-frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\" "
