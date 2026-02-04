@@ -15,7 +15,7 @@ export default function App(){
     }
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:3000/search-real-movies?title=${query}`);
+      const response = await axios.get(`https://redesigned-tribble-fqkt.onrender.com/search-real-movies?title=${query}`);
       setMovies(response.data);
     }catch(error){
       console.error("Connection failed");      
