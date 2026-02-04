@@ -33,7 +33,7 @@ export default function App(){
     setSelectedMovie(movie);
     setTrailerKey(null);
     try{
-      const response = await axios.get(`http://localhost:3000/movie/${movie.id}/videos`);
+      const response = await axios.get(`https://redesigned-tribble-fqkt.onrender.com/movie/${movie.id}/videos`);
       setTrailerKey(response.data||false);
     }catch(err){
       console.log("no trailer found");
