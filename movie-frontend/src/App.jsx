@@ -6,9 +6,13 @@ export default function App(){
   const [movies, setMovies] = useState([]); //api le pathako movie store garna
   const [loading, setLoading] = useState(false); //load huda kehi dekhauna
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [history, setHistory] = useState([]);
   const [trailerKey, setTrailerKey] = useState(null); //trailer ko lagi
   const handleSearch = async () => {
     if(!query) return;
+    if(!history.includes(query)){
+      setHistory([query,...history].slice(0,5));
+    }
     setLoading(true);
     try {
       const response = await axios.get(`http://localhost:3000/search-real-movies?title=${query}`);
@@ -104,7 +108,17 @@ export default function App(){
 
   return (
     <div className="min-h-screen p-8 font-sans bg-black text-white">
-      <div className="max-w-2xl mx-auto text-center mb-12">
+        <aside className="w-full md:w-64 bg-gray-900/50 p-6 rounded-2xl border border-gray-800 h-fit">
+          <h3 className="text-gray-400 uppercase text-xs font-bold tracking-widest mb-4">Recent Searches</h3>
+          <div className="flex flex-col gap-2">
+            {history.length === 0 && <p className="text-gray-600 text-sm">No history yet...</p> }
+            {history.map((item,index)=>(
+              <button className="text-left p-2 rounded-lg hover:bg-blue-600/2 hover:text-blue-400 transition colors text-gray-300 truncate" key={index} onClick={()=>{setQuery(item);}}>{item}</button>
+            ))}
+          </div>
+        </aside>
+      <main className="flex-1">
+        <div className="max-w-2xl mx-auto text-center mb-12">
         <h1 className="text-5xl font-extrabold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Movie</h1>
         <div className="flex gap-2">
           <input type="text" className="flex-1 p-3 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-blue-500" placeholder="Search your favorite movie" onChange={(e)=>setQuery(e.target.value)} onKeyDown={handleKeyDown}/>
@@ -135,6 +149,7 @@ export default function App(){
         ))}
         <MovieModal movie={selectedMovie} onClose={()=>setSelectedMovie(null)} />
       </div>
+      </main>
     </div>
   );
 }
